@@ -1,0 +1,32 @@
+{
+  "name": "node-enthusiast",
+  "version": "1.0.0",
+  "description": "Just I'm very enthusiast to know more about nodejs through different projects",
+  "main": "predict.js",
+  "scripts": {
+    "train-text": "node src/ml-test/text/train.js",
+    "predict-text": "node src/ml-test/text/predict.js"
+  },
+  "keywords": [
+    "nodejs",
+    "projects",
+    "enthusiast"
+  ],
+  "author": {
+    "name": "Mussa Charles",
+    "email": "mussacharles60@gmail.com"
+  },
+  "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mussacharles60/node-enthusiast.git"
+  },
+  "bugs": {
+      "url": "https://github.com/mussacharles60/node-enthusiast/issues"
+  },
+  "homepage": "https://github.com/mussacharles60/node-enthusiast#readme",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.1.0",
+    "spacy": "^0.0.4"
+  }
+}
