@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Voice App</title>
+    <!-- Import the socket.io client library -->
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <!-- Create a button to start/stop the audio stream -->
+    <button id="start-stop">Start</button>
+
+    <!-- Create an audio element to play the received audio -->
+    <audio id="audio" autoplay></audio>
+
+    <!-- Add a script to handle the client-side functionality -->
+    <script>
+      // Connect to the server using the socket.io client library
+      const socket = io();
+
+      // Get a reference to the start/stop button and the audio element
+      const startStopButton = document.getElementById('start-stop');
+      const audio = document.getElementById('audio');
+
+      // Set up the start/stop button to toggle the audio stream
+      startStopButton.addEventListener('click', () => {
+        if (startStopButton.innerHTML === 'Start') {
+          // If the button says "Start", start the audio stream
+          startStopButton.innerHTML = 'Stop';
+          navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            // When the stream is ready, create an audio context and an audio source
+            const audioCtx = new AudioContext();
+            const source = audioCtx.createMediaStreamSource(stream);
+
+            // Set up the audio context to send the audio data to the server
+            const processor = audioCtx.createScriptProcessor(1024, 1, 1);
+            processor.onaudioprocess = (event) => {
+              // When audio data is available, send it to the server
+              socket.emit('audio', event.inputBuffer.getChannelData(0));
+            }
+            source.connect(processor);
+            processor.connect(audioCtx.destination);
+          });
+        } else {
+          // If the button says "Stop", stop the audio stream
+          startStopButton.innerHTML = 'Start';
+          audioCtx.close();
+        }
+      });
+
+      // Set up the socket to receive audio messages and play them back
+      socket.on('audio', (data) => {
+        // When an audio message is received, play it back through the audio element
+        audio.src = URL.createObjectURL(new Blob([data]));
+      });
+    </script>
+  </body>
+</html>
