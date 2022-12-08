@@ -5,7 +5,8 @@
   "main": "predict.js",
   "scripts": {
     "train-text": "node src/ml-test/text/train.js",
-    "predict-text": "node src/ml-test/text/predict.js"
+    "predict-text": "node src/ml-test/text/predict.js",
+    "parse-pdf": "node src/ml-test/nlp/parser.js"
   },
   "keywords": [
     "nodejs",
@@ -17,16 +18,17 @@
     "email": "mussacharles60@gmail.com"
   },
   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/mussacharles60/node-enthusiast.git"
+    "type": "git",
+    "url": "git+https://github.com/mussacharles60/node-enthusiast.git"
   },
   "bugs": {
-      "url": "https://github.com/mussacharles60/node-enthusiast/issues"
+    "url": "https://github.com/mussacharles60/node-enthusiast/issues"
   },
   "homepage": "https://github.com/mussacharles60/node-enthusiast#readme",
   "license": "ISC",
   "dependencies": {
     "@tensorflow/tfjs": "^4.1.0",
+    "pdf-parse": "^1.1.1",
     "spacy": "^0.0.4"
   }
 }
