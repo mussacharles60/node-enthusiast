@@ -52,10 +52,69 @@ const deDupe = (pages) => {
         .replaceAll("</i> ", "</i>")
         .replaceAll("<i></i> ", "")
         .replaceAll("<i></i>", "")
+        .replaceAll("PREPENDED", "")
+        .replaceAll("&nbsp;", "")
+        .replaceAll('<p align="RIGHT">', "")
         .trim()}`;
+
+      const synonyms = [];
+
+      if (
+        og.includes("(<i>t") &&
+        og.includes("</i>)") &&
+        og.includes("</b>.") &&
+        og.indexOf("(<i>t") < og.lastIndexOf("</b>.") + 5
+      ) {
+        const synonymsStr = og.substring(
+          og.indexOf("(<i>t"),
+          og.lastIndexOf("</b>.") + 5
+        ); //.replace('</b>.', '</br>');
+        const synonymsStrSplit = synonymsStr
+          .replaceAll("<p>", "")
+          .replaceAll("</p>", "")
+          .replaceAll("<b></b>", "")
+          .split(";");
+        synonymsStrSplit.forEach((x1) => {
+          x1.split(",").forEach((x) => {
+            x.split(".").forEach((s) => {
+              if (
+                s.trim().includes("(<i>t") &&
+                s.trim().includes("</i>)") &&
+                s.trim().includes("<b>") &&
+                s.trim().includes("</b>")
+              ) {
+                console.log("synonymsStr", s.trim());
+                // console.log("\n");
+                const ss = s.trim().split(")");
+                const k = ss[0].trim();
+                const v = ss[1].trim();
+                const synonym = {
+                  type: k
+                    .replaceAll("(", "")
+                    .replaceAll(")", "")
+                    .replaceAll("<i>", "")
+                    .replaceAll("</i>", "")
+                    .trim(),
+                  synonym: v
+                    .replaceAll(".", "")
+                    .replaceAll("<b>", "")
+                    .replaceAll("</b>", "")
+                    .trim(),
+                };
+                console.log("synonym", synonym);
+                synonyms.push(synonym);
+              }
+            });
+          });
+        });
+      }
+
       entries[word] = {
         og: og,
       };
+      if (synonyms.length > 0) {
+        entries[word].synonyms = synonyms;
+      }
     });
     // console.log(dictionary);
     // console.log(util.inspect(entries, { depth: null, colors: true }));
