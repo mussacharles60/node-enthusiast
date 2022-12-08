@@ -29,7 +29,7 @@ const deDupe = (pages) => {
         let sup = entry.slice(startSup, endSup + 6);
         word = word += sup;
       }
-      const og = `<p>${entry
+      const html = `<p>${entry
         .replaceAll("\n<b></b>", "")
         .replaceAll("\n</font>", "")
         .replaceAll("\n<b>\n\n</b>", "")
@@ -57,17 +57,20 @@ const deDupe = (pages) => {
         .replaceAll('<p align="RIGHT">', "")
         .trim()}`;
 
+      const definitions = [];
       const synonyms = [];
 
+      let definitionsStr = "";
+      let synonymsStr = "";
       if (
-        og.includes("(<i>t") &&
-        og.includes("</i>)") &&
-        og.includes("</b>.") &&
-        og.indexOf("(<i>t") < og.lastIndexOf("</b>.") + 5
+        html.includes("(<i>t") &&
+        html.includes("</i>)") &&
+        html.includes("</b>.") &&
+        html.indexOf("(<i>t") < html.lastIndexOf("</b>.") + 5
       ) {
-        const synonymsStr = og.substring(
-          og.indexOf("(<i>t"),
-          og.lastIndexOf("</b>.") + 5
+        synonymsStr = html.substring(
+          html.indexOf("(<i>t"),
+          html.lastIndexOf("</b>.") + 5
         ); //.replace('</b>.', '</br>');
         const synonymsStrSplit = synonymsStr
           .replaceAll("<p>", "")
@@ -83,7 +86,7 @@ const deDupe = (pages) => {
                 s.trim().includes("<b>") &&
                 s.trim().includes("</b>")
               ) {
-                console.log("synonymsStr", s.trim());
+                // console.log("synonymsStr", s.trim());
                 // console.log("\n");
                 const ss = s.trim().split(")");
                 const k = ss[0].trim();
@@ -101,16 +104,89 @@ const deDupe = (pages) => {
                     .replaceAll("</b>", "")
                     .trim(),
                 };
-                console.log("synonym", synonym);
+                // console.log("synonym", synonym);
                 synonyms.push(synonym);
               }
             });
           });
         });
       }
+      if (synonymsStr.length > 0) {
+        definitionsStr = html.replace(synonymsStr, "");
+      } else {
+        definitionsStr = html;
+      }
+      // if (
+      //   definitionsStr.lastIndexOf("]") >= 0 &&
+      //   definitionsStr.lastIndexOf("]") < definitionsStr.length
+      // ) {
+      //   definitionsStr = definitionsStr.substring(
+      //     definitionsStr.lastIndexOf("]") + 1
+      //   );
+      // } else if (
+      //   definitionsStr.lastIndexOf(">") >= 0 &&
+      //   definitionsStr.lastIndexOf(">") < definitionsStr.length
+      // ) {
+      //   definitionsStr = definitionsStr.substring(
+      //     definitionsStr.lastIndexOf(">") + 1
+      //   );
+      // }
+
+      definitionsStr
+        .trim()
+        .replaceAll("<b>" + word + "</b>", "")
+        .replaceAll("<sup>", "[")
+        .replaceAll("</sup>", "]")
+        .replaceAll("<i>", "[")
+        .replaceAll("</i>", "]")
+        .replaceAll("<p>", "")
+        .replaceAll("</p>", "")
+        .replaceAll("<b>", "[")
+        .replaceAll("</b>", "]")
+        .replaceAll("[(", "[")
+        .replaceAll(")]", "]")
+        .replaceAll("e.g.", "eg:")
+        .split(".")
+        .forEach((d) => {
+          const dd =
+            d
+              .replaceAll("<i>", '"')
+              .replaceAll("</i>", '"')
+              .replaceAll("<p>", '"')
+              .replaceAll("</p>", '"')
+              .replaceAll("<b>", '"')
+              .replaceAll("</b>", '"')
+              .replaceAll("-", "")
+              .trim() + "";
+          let ndd = dd;
+          if (ndd.length > 0 && ndd !== '"' && ndd !== "(Kar)") {
+            if (
+              ndd.lastIndexOf("]") >= 0 &&
+              ndd.lastIndexOf("]") < ndd.length
+            ) {
+              ndd = ndd.substring(ndd.lastIndexOf("]") + 1);
+              // if (
+              //   ndd.lastIndexOf(")") >= 0 &&
+              //   ndd.lastIndexOf(")") < ndd.length
+              // ) {
+              //   ndd = ndd.substring(ndd.lastIndexOf(")") + 1);
+              // }
+            }
+            // else if (
+            //   ndd.lastIndexOf(")") >= 0 &&
+            //   ndd.lastIndexOf(")") < ndd.length
+            // ) {
+            //   ndd = ndd.substring(ndd.lastIndexOf(")") + 1);
+            // }
+            if (ndd.trim().length > 0) {
+              definitions.push(ndd.trim());
+            }
+          }
+        });
 
       entries[word] = {
-        og: og,
+        html: html,
+        definitions: definitions,
       };
       if (synonyms.length > 0) {
         entries[word].synonyms = synonyms;
