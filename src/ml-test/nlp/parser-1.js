@@ -30,6 +30,7 @@ const deDupe = (pages) => {
         word = word += sup;
       }
       const html = `<p>${entry
+        .replaceAll("\t", "")
         .replaceAll("\n<b></b>", "")
         .replaceAll("\n</font>", "")
         .replaceAll("\n<b>\n\n</b>", "")
@@ -55,6 +56,7 @@ const deDupe = (pages) => {
         .replaceAll("PREPENDED", "")
         .replaceAll("&nbsp;", "")
         .replaceAll('<p align="RIGHT">', "")
+        .replaceAll("  ", " ")
         .trim()}`;
 
       const definitions = [];
@@ -146,6 +148,7 @@ const deDupe = (pages) => {
         .replaceAll("[(", "[")
         .replaceAll(")]", "]")
         .replaceAll("e.g.", "eg:")
+        .replaceAll("k.m.", "km:")
         .split(".")
         .forEach((d) => {
           const dd =
@@ -159,7 +162,16 @@ const deDupe = (pages) => {
               .replaceAll("-", "")
               .trim() + "";
           let ndd = dd;
-          if (ndd.length > 0 && ndd !== '"' && ndd !== "(Kar)") {
+          if (
+            ndd.length > 0 &&
+            ndd !== '"' &&
+            ndd !== "(Kar)" &&
+            ndd !== "(Kng)" &&
+            ndd !== "(" &&
+            ndd !== ")" &&
+            ndd !== "[" &&
+            ndd !== "]"
+          ) {
             if (
               ndd.lastIndexOf("]") >= 0 &&
               ndd.lastIndexOf("]") < ndd.length
@@ -178,7 +190,16 @@ const deDupe = (pages) => {
             // ) {
             //   ndd = ndd.substring(ndd.lastIndexOf(")") + 1);
             // }
-            if (ndd.trim().length > 0) {
+            if (
+              ndd.trim().length > 0 &&
+              ndd !== '"' &&
+              ndd !== "(Kar)" &&
+              ndd !== "(Kng)" &&
+              ndd !== "(" &&
+              ndd !== ")" &&
+              ndd !== "[" &&
+              ndd !== "]"
+            ) {
               definitions.push(ndd.trim());
             }
           }
