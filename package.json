@@ -30,6 +30,7 @@
     "@tensorflow/tfjs": "^4.1.0",
     "ip2location-nodejs": "^9.4.2",
     "pdf-parse": "^1.1.1",
+    "play-sound": "^1.1.6",
     "spacy": "^0.0.4"
   }
 }
